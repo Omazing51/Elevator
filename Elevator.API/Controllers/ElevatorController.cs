@@ -34,8 +34,15 @@ namespace Elevator.API.Controllers
         [HttpPost("call")]
         public IActionResult Call([FromBody] int floor)
         {
-            _elevatorMovement.CallElevator(floor);
-            return Ok();
+            try
+            {
+                _elevatorMovement.CallElevator(floor);
+                return Ok();
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("start")]
