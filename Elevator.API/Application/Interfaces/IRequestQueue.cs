@@ -3,8 +3,9 @@
     public interface IRequestQueue
     {
         void Enqueue(int floor);
-        int? Dequeue();
         bool Contains(int floor);
         bool IsEmpty();
+        List<int> GetRequests();
+        void Remove(int floor);
     }
 }

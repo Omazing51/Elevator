@@ -20,10 +20,20 @@ namespace Elevator.API.Application.Services
         public void CallElevator(int floor)
         {
             _requestQueue.Enqueue(floor);
+
+            if (_state == ElevatorState.Idle)
+            {
+                Start();
+            }
         }
 
         public void Start()
         {
+            if (_doorsOpen)
+            {
+                CloseDoors();
+            }
+
             _state = ElevatorState.Moving;
             ProcessRequests();
         }
@@ -33,7 +43,16 @@ namespace Elevator.API.Application.Services
             _state = ElevatorState.Stopped;
         }
 
-        public void OpenDoors() => _doorsOpen = true;
+        public void OpenDoors()
+        {
+            _doorsOpen = true;
+
+            Task.Run(async () =>
+            {
+                await Task.Delay(2000); 
+                _doorsOpen = false;
+            });
+        }
 
         public void CloseDoors() => _doorsOpen = false;
 
@@ -48,15 +67,28 @@ namespace Elevator.API.Application.Services
         {
             while (!_requestQueue.IsEmpty())
             {
-                int? nextFloor = _requestQueue.Dequeue();
-                if (nextFloor.HasValue)
+                var requests = _requestQueue.GetRequests();
+
+                requests.Sort((a, b) => a.CompareTo(b));
+
+                foreach (var targetFloor in requests)
                 {
-                    _currentFloor = nextFloor.Value;
-                    OpenDoors();
-                    Thread.Sleep(1000); // Simula tiempo de espera
-                    CloseDoors();
+                    while (_currentFloor != targetFloor && _state == ElevatorState.Moving)
+                    {
+                        _currentFloor += _currentFloor < targetFloor ? 1 : -1;
+                        Thread.Sleep(3000); 
+                    }
+
+                    if (_currentFloor == targetFloor)
+                    {
+                        OpenDoors();
+                        Thread.Sleep(3000); 
+                        CloseDoors();
+                        _requestQueue.Remove(targetFloor); 
+                    }
                 }
             }
+
             _state = ElevatorState.Idle;
         }
     }

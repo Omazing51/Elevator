@@ -4,7 +4,7 @@ namespace Elevator.API.Infraestructure.Queues
 {
     public class RequestQueue : IRequestQueue
     {
-        private readonly Queue<int> _queue = new();
+        private readonly List<int> _requests = new();
         private const int MaxFloor = 5;
         private const int MinFloor = 0;
 
@@ -13,17 +13,16 @@ namespace Elevator.API.Infraestructure.Queues
             if (floor < MinFloor || floor > MaxFloor)
                 throw new ArgumentOutOfRangeException(nameof(floor), $"El piso debe estar entre {MinFloor} y {MaxFloor}.");
 
-            if (!_queue.Contains(floor))
-                _queue.Enqueue(floor);
+            if (!_requests.Contains(floor))
+                _requests.Add(floor);
         }
 
-        public int? Dequeue()
-        {
-            return _queue.Count > 0 ? _queue.Dequeue() : null;
-        }
+        public List<int> GetRequests() => new(_requests);
 
-        public bool Contains(int floor) => _queue.Contains(floor);
+        public void Remove(int floor) => _requests.Remove(floor);
 
-        public bool IsEmpty() => _queue.Count == 0;
+        public bool Contains(int floor) => _requests.Contains(floor);
+
+        public bool IsEmpty() => !_requests.Any();
     }
 }
