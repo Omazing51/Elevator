@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html ng-app="elevatorApp">
+<head>
+  <meta charset="UTF-8">
+  <title>Control de Ascensor</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script src="app.js"></script>
+  <script src="services/elevatorService.js"></script>
+  <script src="controllers/elevatorController.js"></script>
+  <link rel="stylesheet" href="styles/style.css">
+</head>
+<body ng-controller="ElevatorController">
+  <h1>Panel de Control del Ascensor</h1>
+
+  <div>
+    <label>Solicitar piso:</label>
+    <input type="number" ng-model="floor" min="0" max="5">
+    <button ng-click="callElevator()">Llamar</button>
+  </div>
+
+  <div>
+    <button ng-click="start()">Iniciar</button>
+    <button ng-click="stop()">Detener</button>
+    <button ng-click="openDoors()">Abrir puertas</button>
+    <button ng-click="closeDoors()">Cerrar puertas</button>
+  </div>
+
+  <div>
+    <h3>Estado del ascensor:</h3>
+    <p>Piso actual: {{ status.currentFloor }}</p>
+  </div>
+</body>
+</html>
