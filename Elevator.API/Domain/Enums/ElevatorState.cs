@@ -1,6 +1,9 @@
 ﻿namespace Elevator.API.Domain.Enums
 {
-    public class ElevatorState
+    public enum ElevatorState
     {
+        Moving,
+        Stopped,
+        Idle
     }
 }

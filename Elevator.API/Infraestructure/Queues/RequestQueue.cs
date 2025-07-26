@@ -1,6 +1,8 @@
-﻿namespace Elevator.API.Infraestructure.Queues
+﻿using Elevator.API.Application.Interfaces;
+
+namespace Elevator.API.Infraestructure.Queues
 {
-    public class RequestQueue
+    public class RequestQueue : IRequestQueue
     {
     }
 }
